@@ -1,0 +1,207 @@
+<!-- no.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a4a4a 50%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Rain effect */
+        .rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.6));
+            animation: fall linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-120px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Dark overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .container {
+            z-index: 3;
+            padding: 40px;
+            max-width: 1200px;
+            animation: fadeIn 2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .image-container {
+            width: 1024px;
+            height: 1024px;
+            max-width: 90vw;
+            max-height: 60vh;
+            margin: 0 auto;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            border: 10px solid #2c3e50;
+            background: #1a1a1a;
+            filter: grayscale(30%) brightness(0.9);
+            position: relative;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: contrast(1.1);
+        }
+
+        /* Lightning effect */
+        .lightning {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 4;
+            animation: flash 8s infinite;
+        }
+
+        @keyframes flash {
+            0%, 90%, 100% { opacity: 0; }
+            92%, 96% { opacity: 0.3; }
+            94% { opacity: 0.1; }
+        }
+
+        @media (max-width: 1100px) {
+            .image-container {
+                width: 90vw;
+                height: 90vw;
+                max-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rain" id="rain"></div>
+    <div class="overlay"></div>
+    <div class="lightning"></div>
+    
+    <div class="container">
+        <div class="image-container">
+            <img src="https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?w=1024&h=1024&fit=crop" alt="Rainy Day">
+        </div>
+    </div>
+
+    <script>
+        // Create rain effect
+        function createRain() {
+            const rainContainer = document.getElementById('rain');
+            const dropCount = 150;
+            
+            for (let i = 0; i < dropCount; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 0.8 + 0.5) + 's';
+                drop.style.animationDelay = Math.random() * 2 + 's';
+                drop.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                // Varying lengths for depth
+                const length = Math.random() * 60 + 40;
+                drop.style.height = length + 'px';
+                
+                rainContainer.appendChild(drop);
+            }
+        }
+
+        // Create continuous new raindrops
+        function addNewDrops() {
+            const rainContainer = document.getElementById('rain');
+            
+            setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 0.8 + 0.5) + 's';
+                
+                const length = Math.random() * 60 + 40;
+                drop.style.height = length + 'px';
+                
+                rainContainer.appendChild(drop);
+                
+                setTimeout(() => {
+                    drop.remove();
+                }, 2000);
+            }, 50);
+        }
+
+        createRain();
+        addNewDrops();
+
+        // Random occasional thunder sound effect simulation (visual only)
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                const lightning = document.querySelector('.lightning');
+                lightning.style.animation = 'none';
+                setTimeout(() => {
+                    lightning.style.animation = 'flash 2s';
+                }, 10);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
